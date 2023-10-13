@@ -1,0 +1,23 @@
+.font-size {
+	font-size: 1.5rem;
+}
+
+p {
+    margin: 0!important;
+}
+
+.bg-blue {
+    background-color: #00006F;
+}
+
+.pointer {
+	cursor: pointer;
+}
+
+.pointer:hover {
+	background-color: #ccc;
+}
+
+.b {
+	border: 5px double white;
+}
