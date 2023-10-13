@@ -18,6 +18,10 @@ p {
 	background-color: #ccc;
 }
 
-.b {
+.single-border {
+	border: 2px solid white;
+}
+
+.double-border {
 	border: 5px double white;
 }
