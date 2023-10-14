@@ -8,6 +8,49 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
+    <div class="vh-100 bg-dark d-flex justify-content-center align-items-center">
+      <div class="col-10 col-md-7">
+        <!-- first page -->
+        <div id="initial-form" class="col-12 bg-white text-center p-4">
+          <h3 class="mb-4">Please type your information below</h3>
+          <!-- information form -->
+          <form id="bank-form" onsubmit="event.preventDefault(), initializeUserAccount()">
+            <div class="form-group">
+              <input type="email" class="form-control" name="inputEmail" aria-describedby="emailHelp" placeholder="Email" value="sss@gmail.com" required>
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" name="inputFirstName" placeholder="Fisrt Name" value="Makoto" required>
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" name="inputLastName" placeholder="Last Name" value="Honda" required>
+            </div>
+            <div class="form-group">
+              <input type="number" class="form-control" name="inputDeposit" placeholder="Deposit your money" value="200000" required>
+            </div>
+            <!-- radio check mark -->
+            <div class="form-group">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="accountType" id="accountType1" checked required>
+                <label class="form-check-label" for="accountType1">
+                  Saving
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="accountType" id="accountType2">
+                <label class="form-check-label" for="accountType2">
+                  Checking
+                </label>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary col-12">Submit</button>
+          </form>
+        </div>
+        <!-- second page -->
+        <div id="bank-page" class="bg-info col-12 text-center text-white"></div>
+      </div>
+    </div>
+
     <script src="main.js"></script>
+    <script src="https://kit.fontawesome.com/71955fee34.js" crossorigin="anonymous"></script>
   </body>
 </html>
