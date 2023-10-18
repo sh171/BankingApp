@@ -35,6 +35,11 @@ class BankAccount{
     	amount = amount > maxAvailableWithdraw ? maxAvailableWithdraw : amount;
     	return amount;
     }
+
+    withdraw(total) {
+    	this.money -= this.calculateWithdrawAmount(total);
+    	return this.money;
+    }
 }
 
 function getRandomInteger(min, max) {
@@ -197,8 +202,9 @@ function withdrawController(userAccount) {
 function withdrawPage(userAccount) {
 	let container = document.createElement("div");
 	container.classList.add("p-4");
-	let withdrawCon = document.createElement("div");
 
+	let withdrawCon = document.createElement("div");
+	container.append(withdrawCon);
 	withdrawCon.append(billInputSector("Please Enter The Withdrawal Amount"));
 	withdrawCon.append(backNextBtn("Back", "Next"));
 
@@ -220,21 +226,37 @@ function withdrawPage(userAccount) {
 	let nextBtn = withdrawCon.querySelectorAll(".next-btn")[0];
 	nextBtn.addEventListener("click", function() {
 		container.innerHTML = "";
-		container.append(billDialog("The money you are going to take is ...", billInputs, "data-bill"));
+
+		let dialogCon = document.createElement("div");
+		dialogCon.append(billDialog("The money you are going to take is ...", billInputs, "data-bill"));
+		container.append(dialogCon);
 
 		let total = userAccount.calculateWithdrawAmount(billSummation(billInputs, "data-bill"));
 
-		container.innerHTML += 
+		dialogCon.innerHTML += 
 		`
 			<div class="bg-danger d-flex align-items-center p-2 my-4 font-size text-white">
 				<p class="col-8 text-left">Total to be withdrawn: </p>
 				<p class="col-4 text-right">$${total}</p>
 			</div>
 		`
-		container.append(backNextBtn("Go Back", "Confirm"));
+		dialogCon.append(backNextBtn("Go Back", "Confirm"));
+
+		let dialogBackBtn = dialogCon.querySelectorAll(".back-btn")[0];
+		let dialogNextBtn = dialogCon.querySelectorAll(".next-btn")[0];
+
+		dialogBackBtn.addEventListener("click", function() {
+			dialogCon.innerHTML = "";
+			container.append(withdrawCon);
+		});
+		dialogNextBtn.addEventListener("click", function() {
+			userAccount.withdraw(total);
+			displayNone(config.sidePage);
+			displayBlock(config.bankPage);
+			config.bankPage.append(mainBankPage(userAccount));
+		});
 	});
 
-	container.append(withdrawCon);
 	return container;
 }
 
