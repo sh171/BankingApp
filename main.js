@@ -88,7 +88,7 @@ function mainBankPage(userAccount) {
 
 	nameP.innerHTML = "Name: " + userAccount.getFullName();
 	accountNumP.innerHTML = "ID: " + userAccount.accountNumber;
-	moneyP.innerHTML = "Your initial deposit: " + "$" + userAccount.money;
+	moneyP.innerHTML = "$" + userAccount.money;
 
 	userInfoDiv.append(nameP, accountNumP, moneyP);
 
