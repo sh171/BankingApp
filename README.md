@@ -6,4 +6,4 @@ In this banking account application, we will primarily rely on button clicks and
 
 This interface will also include buttons, which serve as the main event listeners. Whenever a user clicks a button, a specific function will be executed to perform certain actions.
 
-## Link page: https://sh171.github.io/BankingApp/
+Link page: 
