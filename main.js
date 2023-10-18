@@ -16,6 +16,7 @@ const config = {
 
 class BankAccount{
 	maxWithdrawParcent = 0.2;
+	annualInterestRate = 0.08;
 
     constructor(firstName, lastName, email, type, accountNumber, money) {
         this.firstName = firstName;
@@ -38,6 +39,18 @@ class BankAccount{
 
     withdraw(total) {
     	this.money -= this.calculateWithdrawAmount(total);
+    	return this.money;
+    }
+
+    deposit(total) {
+    	this.money += total;
+    	return this.money;
+    }
+
+    simulateTimePassage(days) {
+    	let profit = (this.money * Math.pow(1 + this.annualInterestRate, days / 365)) - this.money;
+    	console.log(profit);
+    	this.money += profit;
     	return this.money;
     }
 }
@@ -73,9 +86,9 @@ function mainBankPage(userAccount) {
 	accountNumP = nameP.cloneNode(true);
 	moneyP = nameP.cloneNode(true);
 
-	nameP.innerHTML = userAccount.getFullName();
-	accountNumP.innerHTML = userAccount.accountNumber;
-	moneyP.innerHTML = userAccount.money;
+	nameP.innerHTML = "Name: " + userAccount.getFullName();
+	accountNumP.innerHTML = "ID: " + userAccount.accountNumber;
+	moneyP.innerHTML = "Your initial deposit: " + "$" + userAccount.money;
 
 	userInfoDiv.append(nameP, accountNumP, moneyP);
 
@@ -111,9 +124,18 @@ function mainBankPage(userAccount) {
 		</div>
 	`
 
-	menuDiv.querySelectorAll("#withdrawBtn")[0].addEventListener("click", function() {withdrawController(userAccount)});
-	menuDiv.querySelectorAll("#depositBtn")[0].addEventListener("click", function() {alert("This is deposit button")});
-	menuDiv.querySelectorAll("#comeBackLaterBtn")[0].addEventListener("click", function() {alert("This is come back later button")});
+	menuDiv.querySelectorAll("#withdrawBtn")[0].addEventListener("click", function() {
+		sideBankSwith();
+		config.sidePage.append(withdrawPage(userAccount));
+	});
+	menuDiv.querySelectorAll("#depositBtn")[0].addEventListener("click", function() {
+		sideBankSwith();
+		config.sidePage.append(depositPage(userAccount));
+	});
+	menuDiv.querySelectorAll("#comeBackLaterBtn")[0].addEventListener("click", function() {
+		sideBankSwith();
+		config.sidePage.append(comeBackLater(userAccount));
+	});
 
 	container.append(userInfoDiv);
 	container.append(balanceDiv);
@@ -166,7 +188,7 @@ function billInputSector(title) {
 			</div>
 			<!-- total money -->
 			<div class="col-12 bg-info p-3 double-border">
-			  <p id="withdrawTotal" class="text-white">$0.00</p>
+			  <p id="totalBillAmount" class="text-white">$0.00</p>
 			</div>
 		</div>
 	`
@@ -189,14 +211,18 @@ function backNextBtn(backStr, nextStr) {
 	return container;
 }
 
-function withdrawController(userAccount) {
+function sideBankSwith() {
 	displayNone(config.bankPage);
 	displayBlock(config.sidePage);
 
 	config.bankPage.innerHTML = "";
 	config.sidePage.innerHTML = "";
+}
 
-	config.sidePage.append(withdrawPage(userAccount));
+function bankReturn(userAccount) {
+	displayNone(config.sidePage);
+	displayBlock(config.bankPage);
+	config.bankPage.append(mainBankPage(userAccount));
 }
 
 function withdrawPage(userAccount) {
@@ -210,17 +236,14 @@ function withdrawPage(userAccount) {
 
 	let billInputs = withdrawCon.querySelectorAll(".bill-input");
 	for (let i=0; i<billInputs.length; i++) {
-		billInputs[i].addEventListener("click", function() {
-			document.getElementById("withdrawTotal").innerHTML = billSummation(billInputs, "data-bill");
+		billInputs[i].addEventListener("change", function() {
+			document.getElementById("totalBillAmount").innerHTML = billSummation(billInputs, "data-bill");
 		});
 	}
 
 	let backBtn = withdrawCon.querySelectorAll(".back-btn")[0];
 	backBtn.addEventListener("click", function() {
-		displayNone(config.sidePage);
-		displayBlock(config.bankPage);
-
-		config.bankPage.append(mainBankPage(userAccount));
+		bankReturn(userAccount);
 	});
 
 	let nextBtn = withdrawCon.querySelectorAll(".next-btn")[0];
@@ -251,9 +274,7 @@ function withdrawPage(userAccount) {
 		});
 		dialogNextBtn.addEventListener("click", function() {
 			userAccount.withdraw(total);
-			displayNone(config.sidePage);
-			displayBlock(config.bankPage);
-			config.bankPage.append(mainBankPage(userAccount));
+			bankReturn(userAccount);
 		});
 	});
 
@@ -295,5 +316,88 @@ function billDialog(title, billNodeList, billData) {
             </div>
         </div>
 	`
+	return container;
+}
+
+function depositPage(userAccount) {
+	let container = document.createElement("div");
+	container.classList.add("p-4");
+
+	let depositCon = document.createElement("div");
+	container.append(depositCon);
+	depositCon.append(billInputSector("Please Enter The Depsit Amount"));
+	depositCon.append(backNextBtn("back", "next"));
+
+	let backBtn = depositCon.querySelectorAll(".back-btn").item(0);
+	backBtn.addEventListener("click", function() {
+		bankReturn(userAccount);
+	});
+
+	let billInputs = depositCon.querySelectorAll(".bill-input");
+	for (let i=0; i<billInputs.length; i++) {
+		billInputs[i].addEventListener("change", function() {
+			document.getElementById("totalBillAmount").innerHTML = billSummation(billInputs, "data-bill");
+		});
+	}
+
+	let nextBtn = depositCon.querySelectorAll(".next-btn").item(0);
+	nextBtn.addEventListener("click", function() {
+		container.innerHTML = "";
+		let dialogCon = document.createElement("div");
+		dialogCon.append(billDialog("The money you are going to deposit is ...", billInputs, "data-bill"));
+		container.append(dialogCon);
+
+		let total = billSummation(billInputs, "data-bill");
+		dialogCon.innerHTML += 
+		`
+		<div class="bg-danger d-flex align-items-center p-2 my-4 font-size text-white">
+			<p class="col-8 text-left">Total deposit: </p>
+			<p class="col-4 text-right">$${total}</p>
+		</div>
+		`
+
+		dialogCon.append(backNextBtn("Go Back", "Confirm"));
+		let backBtn = dialogCon.querySelectorAll(".back-btn")[0];
+		let confirmBtn = dialogCon.querySelectorAll(".next-btn")[0];
+
+		backBtn.addEventListener("click", function() {
+			container.innerHTML = "";
+			container.append(depositCon);
+		});
+		confirmBtn.addEventListener("click", function() {
+			userAccount.deposit(total);
+			bankReturn(userAccount);
+		});
+	});
+
+	return container;
+}
+
+function comeBackLater(userAccount)  {
+	let container = document.createElement("div");
+	container.classList.add("p-4");
+
+	container.innerHTML = 
+	`
+		<h3 class="mb-3">How many days will you be gone?</h3>
+		<div class="form-group">
+			<input type="text" class="form-control" id="days-gone" aria-describedby="emailHelp" placeholder="4 days">
+		</div>
+	`
+	container.append(backNextBtn("Back", "Confirm"));
+
+	let backBtn = container.querySelectorAll(".back-btn").item(0);
+	let confirmBtn = container.querySelectorAll(".next-btn").item(0);
+
+	backBtn.addEventListener("click", function() {
+		bankReturn(userAccount);
+	});
+
+	confirmBtn.addEventListener("click", function() {
+		let inputDays = document.getElementById("days-gone").value;
+		userAccount.simulateTimePassage(parseInt(inputDays));
+		bankReturn(userAccount);
+	});
+
 	return container;
 }
