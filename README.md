@@ -1,9 +1,15 @@
 # Banking App
-This banking account application is that simulates a sequence of actions where users input initial data, send that information to a bank account, view bank details, and perform actions like withdrawing money, depositing money, or increasing funds.
+
+## Overview
+The Banking App simulates a real-world banking experience. Users can kick-start their journey by inputting initial account details, then interact with their virtual bank account to view details, deposit funds, withdraw money, and more.
 
 ## Description
-In this banking account application, we will primarily rely on button clicks and create several event listeners throughout the program. Initially, we will create the state of the bank account based on the account information entered into the input tags, and users will interact with this state on the interface by reading and writing data.
+The Banking App is built with interactivity at its core:
 
-This interface will also include buttons, which serve as the main event listeners. Whenever a user clicks a button, a specific function will be executed to perform certain actions.
+- Account Initialization: The journey commences with users entering their account information. This initial data helps in crafting the state of the bank account.
+- Interactive Interface: Users can actively engage with their bank account state through the interface, both reading from and writing to their account data.
+- Event-Driven Actions: The application prominently features buttons that act as the primary event listeners. Each button press corresponds to a particular function, executing predefined actions seamlessly.
+
+With an emphasis on button clicks, the application has been designed to harness several event listeners, ensuring a responsive and intuitive user experience.
 
 Link page: https://sh171.github.io/BankingApp/
